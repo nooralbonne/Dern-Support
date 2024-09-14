@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Dern_Support.Model;
+using Microsoft.AspNetCore.Identity;
 
-namespace Dern_Support.Model
+public class ApplicationUser : IdentityUser
 {
-    public class ApplicationUser : IdentityUser
-    {
-    }
+    // Optional FirstName and LastName
+    public string? FirstName { get; set; } // Nullable
+    public string? LastName { get; set; }  // Nullable
+
+    // Optional: Define navigation properties if needed
+    public List<SupportRequest> SupportRequests { get; set; }
+    public List<Feedback> Feedbacks { get; set; }
 }

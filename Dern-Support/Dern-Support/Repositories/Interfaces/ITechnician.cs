@@ -9,5 +9,6 @@ namespace Dern_Support.Repositories.Interfaces
         Task<TechnicianDto> GetTechnicianById(int technicianId);
         Task<TechnicianDto> UpdateTechnician(int id, TechnicianDto technicianDto);
         Task DeleteTechnician(int id);
+        Task<int> GetTechnicianCount();
     }
 }

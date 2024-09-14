@@ -11,7 +11,9 @@ namespace Dern_Support.Repositories.Interfaces
 
         // Add login 
         public Task<UserDto> UserAuthentication(string username, string password);
-        
+
+        Task<string> GenerateJwtToken(UserDto user); // Add this method
+
         // Add Logout 
         Task Logout();
 

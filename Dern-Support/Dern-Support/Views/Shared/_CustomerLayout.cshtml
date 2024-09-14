@@ -1,0 +1,164 @@
+﻿@{
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DernSupport2</title>
+    <link rel="stylesheet" href="~/css/site.css" /> <!-- Link to your main CSS file -->
+    <style>
+        body {
+            margin: 0;
+            font-family: "DM Sans", sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .navbar {
+            background: linear-gradient(to right, #007bff, #6610f2); /* Gradient background */
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: #fff;
+            font-size: 1.5rem;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .navbar-toggler {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 15px;
+        }
+
+        .navbar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-item {
+            margin: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #fff;
+            padding: 5px 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+            .nav-link:hover,
+            .nav-link.active {
+                background-color: rgba(255, 255, 255, 0.1); /* Light hover effect */
+                border-radius: 5px;
+            }
+
+            .nav-link.disabled {
+                color: #ccc;
+                pointer-events: none;
+            }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px 0;
+        }
+
+        footer {
+            background: linear-gradient(to right, #6610f2, #007bff); /* Matching gradient */
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive styles */
+        @@media (max-width: 768px) {
+            .navbar-toggler {
+                display: block;
+            }
+
+            .navbar-menu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: linear-gradient(to right, #007bff, #6610f2); /* Gradient for responsive */
+                position: absolute;
+                top: 60px;
+                left: 0;
+                padding: 10px 0;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            }
+
+                .navbar-menu.show {
+                    display: flex;
+                }
+
+            .nav-link {
+                padding: 10px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="navbar-brand" href="@Url.Action("Index", "Customer")">Customer Dashboard</a>
+        <div>
+            <a class="nav-link" href="#" onclick="logout()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        @RenderBody() <!-- Renders the content of each view -->
+    </div>
+
+    <script>
+        async function logout() {
+            try {
+                const response = await fetch('/api/Auth/Logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}` // Add JWT token if needed
+                    }
+                });
+
+                if (response.ok) {
+                    localStorage.removeItem('token'); // Clear the JWT token
+                    alert('Logged out successfully!');
+                    window.location.href = '@Url.Action("Login", "Home")'; // Redirect to login page
+                } else {
+                    alert('Logout failed.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during logout.');
+            }
+        }
+    </script>
+
+    @RenderSection("Scripts", required: false) <!-- Section for additional scripts -->
+</body>
+</html>

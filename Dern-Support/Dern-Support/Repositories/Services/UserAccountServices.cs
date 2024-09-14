@@ -2,6 +2,7 @@
 using Dern_Support.Model;
 using Dern_Support.Model.DTO;
 using Dern_Support.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,10 +12,44 @@ namespace Dern_Support.Repositories.Services
     public class UserAccountServices : IUserAccount
     {
         private readonly DernSupportDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserAccountServices(DernSupportDbContext context)
+
+        public UserAccountServices(DernSupportDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
+        }
+
+        public async Task CreateAdminUser(AdminUserCreationDTO dto)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = dto.Username,
+                Email = dto.Email,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName
+            };
+
+            var result = await _userManager.CreateAsync(user, dto.Password);
+
+            if (!result.Succeeded)
+            {
+                throw new Exception("Admin user creation failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
+
+            if (!await _roleManager.RoleExistsAsync(dto.Role))
+            {
+                var roleResult = await _roleManager.CreateAsync(new IdentityRole(dto.Role));
+                if (!roleResult.Succeeded)
+                {
+                    throw new Exception("Role creation failed: " + string.Join(", ", roleResult.Errors.Select(e => e.Description)));
+                }
+            }
+
+            await _userManager.AddToRoleAsync(user, dto.Role);
         }
 
         public async Task<UserAccountDto> CreateUserAccount(UserAccountDto userAccountDto)
@@ -61,7 +96,11 @@ namespace Dern_Support.Repositories.Services
                     Role = ua.Role, // Assuming Role is available
                     CreatedDate = ua.CreatedDate // Assuming CreatedDate is available
                 }).ToListAsync();
+
+
         }
+
+
 
         public async Task<UserAccountDto> GetUserAccountById(int userId)
         {

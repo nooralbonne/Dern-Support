@@ -5,17 +5,33 @@ using Dern_Support.Repositories.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.WebSockets;
+using System;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.Extensions.Logging;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.Services.AddControllers();
 
+        // Add services to the container
+        builder.Services.AddControllersWithViews(); // For MVC with views
+        builder.Services.AddRazorPages(); // For Razor Pages
+
+        // Database configuration
         string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        builder.Services.AddDbContext<DernSupportDbContext>(options => options.UseSqlServer(connectionString));
+        builder.Services.AddDbContext<DernSupportDbContext>(options =>
+            options.UseSqlServer(connectionString));
 
         // Register Identity services
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -23,7 +39,7 @@ public class Program
             .AddDefaultTokenProviders()
             .AddSignInManager<SignInManager<ApplicationUser>>();
 
-        // Register services
+        // Register application services
         builder.Services.AddScoped<IUserAccount, UserAccountServices>();
         builder.Services.AddScoped<ITechnician, TechnicianServices>();
         builder.Services.AddScoped<ISupportRequest, SupportRequestServices>();
@@ -36,11 +52,19 @@ public class Program
         builder.Services.AddScoped<IInventory, InventoryServices>();
         builder.Services.AddScoped<IJobInventory, JobInventoryServices>();
 
-        // Register the IUser and IdentitiUserService
+        // Register user and JWT services
         builder.Services.AddScoped<IUser, IdentitiUserService>();
         builder.Services.AddScoped<JwtTokenService>();
 
-        // Register JWT authentication
+        // Configure JWT authentication
+        var jwtSettings = builder.Configuration.GetSection("JWT");
+        var secretKey = jwtSettings["SecretKey"];
+
+        if (string.IsNullOrEmpty(secretKey))
+        {
+            throw new ArgumentNullException("JWT SecretKey is missing or empty.");
+        }
+
         builder.Services.AddAuthentication(options =>
         {
             options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -49,10 +73,19 @@ public class Program
         })
         .AddJwtBearer(options =>
         {
-            options.TokenValidationParameters = JwtTokenService.ValidateToken(builder.Configuration);
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtSettings["Issuer"],
+                ValidAudience = jwtSettings["Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+            };
         });
 
-        // Swagger configuration
+        // Configure Swagger
         builder.Services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("DernSupportAPI", new OpenApiInfo
@@ -88,7 +121,36 @@ public class Program
             });
         });
 
+        // Add CORS configuration
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+        });
+
+        // Configure WebSocket options
+        builder.Services.AddWebSockets(options =>
+        {
+            options.KeepAliveInterval = TimeSpan.FromMinutes(2);
+        });
+
         var app = builder.Build();
+
+        // Middleware setup
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+        else
+        {
+            app.UseExceptionHandler("/Home/Error");
+            app.UseHsts();
+        }
 
         // Use Swagger and Swagger UI
         app.UseSwagger(options =>
@@ -99,15 +161,61 @@ public class Program
         app.UseSwaggerUI(options =>
         {
             options.SwaggerEndpoint("/api/DernSupportAPI/swagger.json", "Dern Support API");
-            options.RoutePrefix = "";
+            options.RoutePrefix = "swagger"; // Swagger UI path
         });
 
+        // Middleware to prevent caching of sensitive pages
+        app.Use(async (context, next) =>
+        {
+            context.Response.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
+            context.Response.Headers.Add("Pragma", "no-cache");
+            context.Response.Headers.Add("Expires", "-1");
+
+            await next();
+        });
+
+        // Seed roles
+        using (var scope = app.Services.CreateScope())
+        {
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            await SeedRoles(roleManager);
+        }
+
+        // Middleware configuration
+        app.UseHttpsRedirection();
+        app.UseStaticFiles(); // Serves static files from wwwroot
+
+        app.UseRouting();
+
+        // Enable CORS middleware
+        app.UseCors("AllowAll");
+
         // Enable Authentication & Authorization middleware
-        app.UseAuthentication(); // Ensure this is called before UseAuthorization
+        app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapControllers();
+        // Enable WebSocket middleware
+        app.UseWebSockets();
 
-        app.Run();
+        // Map endpoints for Razor Pages and MVC controllers
+        app.MapRazorPages(); // For Razor Pages
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
+
+        await app.RunAsync();
+    }
+
+    private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+    {
+        string[] roles = { "Admin", "User", "Manager" };
+
+        foreach (var role in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
     }
 }

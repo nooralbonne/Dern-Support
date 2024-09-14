@@ -38,6 +38,7 @@ namespace Dern_Support.Data
             modelBuilder.Entity<Inventory>().HasKey(i => i.ItemId);
             modelBuilder.Entity<JobInventory>().HasKey(ji => ji.JobInventoryId);
 
+
             // Define relationships
 
             // UserAccount to Customer (One-to-One)

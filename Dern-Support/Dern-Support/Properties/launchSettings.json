@@ -15,7 +15,8 @@
       "applicationUrl": "http://localhost:5117",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "launchUrl": "" // Set this to the Razor Page URL you want to open
     },
     "https": {
       "commandName": "Project",
@@ -24,14 +25,18 @@
       "applicationUrl": "https://localhost:7205;http://localhost:5117",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "launchUrl": "" // Set this to the Razor Page URL you want to open
+
     },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "launchUrl": "" // Set this to the Razor Page URL you want to open
+
     }
   }
 }
