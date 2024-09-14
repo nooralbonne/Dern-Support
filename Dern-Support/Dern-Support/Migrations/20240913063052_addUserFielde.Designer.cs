@@ -4,6 +4,7 @@ using Dern_Support.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dern_Support.Migrations
 {
     [DbContext(typeof(DernSupportDbContext))]
-    partial class DernSupportDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240913063052_addUserFielde")]
+    partial class addUserFielde
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace Dern_Support.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ApplicationUser", b =>
+            modelBuilder.Entity("Dern_Support.Model.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -42,10 +45,14 @@ namespace Dern_Support.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -69,6 +76,11 @@ namespace Dern_Support.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -144,7 +156,7 @@ namespace Dern_Support.Migrations
                             CustomerId = 1,
                             Address = "123 Elm Street",
                             CompanyName = "N/A",
-                            CreatedDate = new DateTime(2024, 9, 13, 11, 31, 43, 614, DateTimeKind.Local).AddTicks(5071),
+                            CreatedDate = new DateTime(2024, 9, 13, 9, 30, 52, 27, DateTimeKind.Local).AddTicks(5394),
                             CustomerType = "Individual",
                             Email = "alice.smith@example.com",
                             Name = "Alice Smith",
@@ -156,7 +168,7 @@ namespace Dern_Support.Migrations
                             CustomerId = 2,
                             Address = "456 Oak Avenue",
                             CompanyName = "Business Corp",
-                            CreatedDate = new DateTime(2024, 9, 13, 11, 31, 43, 614, DateTimeKind.Local).AddTicks(5075),
+                            CreatedDate = new DateTime(2024, 9, 13, 9, 30, 52, 27, DateTimeKind.Local).AddTicks(5397),
                             CustomerType = "Business",
                             Email = "info@businesscorp.com",
                             Name = "Business Corp",
@@ -209,7 +221,7 @@ namespace Dern_Support.Migrations
                             Comment = "Excellent service!",
                             CustomerId = 1,
                             Rating = 5,
-                            SubmittedDate = new DateTime(2024, 9, 13, 11, 31, 43, 614, DateTimeKind.Local).AddTicks(5204),
+                            SubmittedDate = new DateTime(2024, 9, 13, 9, 30, 52, 27, DateTimeKind.Local).AddTicks(5524),
                             SupportRequestId = 1
                         });
                 });
@@ -315,11 +327,11 @@ namespace Dern_Support.Migrations
                         new
                         {
                             JobId = 1,
-                            CreatedDate = new DateTime(2024, 9, 13, 11, 31, 43, 614, DateTimeKind.Local).AddTicks(5151),
+                            CreatedDate = new DateTime(2024, 9, 13, 9, 30, 52, 27, DateTimeKind.Local).AddTicks(5470),
                             EstimatedCompletionTime = 120,
                             JobStatus = "Scheduled",
                             Priority = "High",
-                            ScheduledDate = new DateTime(2024, 9, 14, 11, 31, 43, 614, DateTimeKind.Local).AddTicks(5121),
+                            ScheduledDate = new DateTime(2024, 9, 14, 9, 30, 52, 27, DateTimeKind.Local).AddTicks(5444),
                             SupportRequestId = 1,
                             TechnicianId = 1
                         });
@@ -359,7 +371,7 @@ namespace Dern_Support.Migrations
                             JobHistoryId = 1,
                             JobId = 1,
                             Status = "Pending",
-                            StatusChangeDate = new DateTime(2024, 9, 13, 11, 31, 43, 614, DateTimeKind.Local).AddTicks(5194),
+                            StatusChangeDate = new DateTime(2024, 9, 13, 9, 30, 52, 27, DateTimeKind.Local).AddTicks(5508),
                             TechnicianNote = "Awaiting parts"
                         });
                 });
@@ -436,7 +448,7 @@ namespace Dern_Support.Migrations
                             Author = "John Doe",
                             Category = "Hardware",
                             Content = "Step-by-step guide to fix AC issues.",
-                            DatePublished = new DateTime(2024, 9, 13, 11, 31, 43, 614, DateTimeKind.Local).AddTicks(5178),
+                            DatePublished = new DateTime(2024, 9, 13, 9, 30, 52, 27, DateTimeKind.Local).AddTicks(5498),
                             TechnicianId = 1,
                             Title = "How to fix a broken AC"
                         });
@@ -480,7 +492,7 @@ namespace Dern_Support.Migrations
                             PaymentId = 1,
                             Amount = 150.00m,
                             JobId = 1,
-                            PaymentDate = new DateTime(2024, 9, 13, 11, 31, 43, 614, DateTimeKind.Local).AddTicks(5163),
+                            PaymentDate = new DateTime(2024, 9, 13, 9, 30, 52, 27, DateTimeKind.Local).AddTicks(5485),
                             PaymentMethod = "CreditCard",
                             PaymentStatus = "Pending"
                         });
@@ -533,7 +545,7 @@ namespace Dern_Support.Migrations
                             CustomerId = 1,
                             RequestDescription = "AC not working",
                             Status = "Submitted",
-                            SubmittedDate = new DateTime(2024, 9, 13, 11, 31, 43, 614, DateTimeKind.Local).AddTicks(5107),
+                            SubmittedDate = new DateTime(2024, 9, 13, 9, 30, 52, 27, DateTimeKind.Local).AddTicks(5432),
                             UrgencyLevel = "High"
                         });
                 });
@@ -777,7 +789,7 @@ namespace Dern_Support.Migrations
                         new
                         {
                             UserId = 1,
-                            CreatedDate = new DateTime(2024, 9, 13, 11, 31, 43, 614, DateTimeKind.Local).AddTicks(4718),
+                            CreatedDate = new DateTime(2024, 9, 13, 9, 30, 52, 27, DateTimeKind.Local).AddTicks(5161),
                             Email = "admin@example.com",
                             PasswordHash = "hashedpassword",
                             Role = "Admin",
@@ -786,7 +798,7 @@ namespace Dern_Support.Migrations
                         new
                         {
                             UserId = 2,
-                            CreatedDate = new DateTime(2024, 9, 13, 11, 31, 43, 614, DateTimeKind.Local).AddTicks(4735),
+                            CreatedDate = new DateTime(2024, 9, 13, 9, 30, 52, 27, DateTimeKind.Local).AddTicks(5175),
                             Email = "tech1@example.com",
                             PasswordHash = "hashedpassword",
                             Role = "Technician",
@@ -795,7 +807,7 @@ namespace Dern_Support.Migrations
                         new
                         {
                             UserId = 3,
-                            CreatedDate = new DateTime(2024, 9, 13, 11, 31, 43, 614, DateTimeKind.Local).AddTicks(4737),
+                            CreatedDate = new DateTime(2024, 9, 13, 9, 30, 52, 27, DateTimeKind.Local).AddTicks(5177),
                             Email = "customer1@example.com",
                             PasswordHash = "hashedpassword",
                             Role = "Customer",
@@ -816,7 +828,7 @@ namespace Dern_Support.Migrations
 
             modelBuilder.Entity("Dern_Support.Model.Feedback", b =>
                 {
-                    b.HasOne("ApplicationUser", null)
+                    b.HasOne("Dern_Support.Model.ApplicationUser", null)
                         .WithMany("Feedbacks")
                         .HasForeignKey("ApplicationUserId");
 
@@ -910,7 +922,7 @@ namespace Dern_Support.Migrations
 
             modelBuilder.Entity("Dern_Support.Model.SupportRequest", b =>
                 {
-                    b.HasOne("ApplicationUser", null)
+                    b.HasOne("Dern_Support.Model.ApplicationUser", null)
                         .WithMany("SupportRequests")
                         .HasForeignKey("ApplicationUserId");
 
@@ -945,7 +957,7 @@ namespace Dern_Support.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("ApplicationUser", null)
+                    b.HasOne("Dern_Support.Model.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -954,7 +966,7 @@ namespace Dern_Support.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ApplicationUser", null)
+                    b.HasOne("Dern_Support.Model.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -969,7 +981,7 @@ namespace Dern_Support.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ApplicationUser", null)
+                    b.HasOne("Dern_Support.Model.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -978,14 +990,14 @@ namespace Dern_Support.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("ApplicationUser", null)
+                    b.HasOne("Dern_Support.Model.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ApplicationUser", b =>
+            modelBuilder.Entity("Dern_Support.Model.ApplicationUser", b =>
                 {
                     b.Navigation("Feedbacks");
 

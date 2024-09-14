@@ -45,7 +45,8 @@ namespace Dern_Support.Controllers
                 return Unauthorized();
             }
 
-            return user;
+            return Ok(user);  // Make sure to return Ok(user) to include roles in response
+
         }
 
         [HttpPost("Logout")]

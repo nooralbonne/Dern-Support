@@ -21,8 +21,8 @@ namespace Dern_Support.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserAccountDto>>> GetUserAccounts()
         {
-            var userAccounts = await _userAccountService.GetAllUserAccounts();
-            return Ok(userAccounts);
+            var users = await _userAccountService.GetAllUserAccounts();
+            return Ok(users);
         }
 
         // GET: api/UserAccounts/5
@@ -46,8 +46,8 @@ namespace Dern_Support.Controllers
                 return BadRequest();
             }
 
-            var updatedUserAccount = await _userAccountService.UpdateUserAccount(id, userAccountDto);
-            if (updatedUserAccount == null)
+            var result = await _userAccountService.UpdateUserAccount(id, userAccountDto);
+            if (result == null)
             {
                 return NotFound();
             }
@@ -60,15 +60,27 @@ namespace Dern_Support.Controllers
         public async Task<ActionResult<UserAccountDto>> PostUserAccount(UserAccountDto userAccountDto)
         {
             var createdUserAccount = await _userAccountService.CreateUserAccount(userAccountDto);
-            return CreatedAtAction("GetUserAccount", new { id = createdUserAccount.UserId }, createdUserAccount);
+            return CreatedAtAction(nameof(GetUserAccount), new { id = createdUserAccount.UserId }, createdUserAccount);
         }
 
         // DELETE: api/UserAccounts/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserAccount(int id)
         {
-            await _userAccountService.DeleteUserAccount(id);
-            return NoContent();
+            try
+            {
+                await _userAccountService.DeleteUserAccount(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                // Log or handle other exceptions if needed
+                return StatusCode(500, "Internal server error");
+            }
         }
     }
 }

@@ -3,8 +3,6 @@
 namespace Dern_Support.Model.DTO
 {
     //Purpose: Represents the history of a job.
-
-
     public class JobHistoryDto
     {
         public int JobHistoryId { get; set; }

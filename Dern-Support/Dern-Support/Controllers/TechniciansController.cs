@@ -17,6 +17,13 @@ namespace Dern_Support.Controllers
             _technicianService = technicianService;
         }
 
+        [HttpGet("count")]
+        public async Task<ActionResult<int>> GetTechnicianCount()
+        {
+            var count = await _technicianService.GetTechnicianCount();
+            return Ok(count);
+        }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TechnicianDto>>> GetTechnicians()
         {

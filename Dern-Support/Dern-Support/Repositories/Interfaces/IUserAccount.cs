@@ -9,5 +9,7 @@ namespace Dern_Support.Repositories.Interfaces
         Task<UserAccountDto> GetUserAccountById(int userId);
         Task<UserAccountDto> UpdateUserAccount(int id, UserAccountDto userAccountDto);
         Task DeleteUserAccount(int id);
+        Task CreateAdminUser(AdminUserCreationDTO dto); // Admin user creation
+
     }
 }

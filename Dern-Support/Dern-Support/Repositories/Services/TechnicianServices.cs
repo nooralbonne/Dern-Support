@@ -84,6 +84,11 @@ namespace Dern_Support.Repositories.Services
             };
         }
 
+        public async Task<int> GetTechnicianCount()
+        {
+            return await _context.Technicians.CountAsync();
+        }
+
         public async Task<TechnicianDto> UpdateTechnician(int id, TechnicianDto technicianDto)
         {
             var existingTechnician = await _context.Technicians.FindAsync(id);
