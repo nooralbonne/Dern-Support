@@ -85,6 +85,23 @@ namespace Dern_Support.Repositories.Services
             };
         }
 
+        public async Task PrioritizeJobs(List<int> jobIds)
+        {
+            for (int i = 0; i < jobIds.Count; i++)
+            {
+                var jobId = jobIds[i];
+                var job = await _context.Jobs.FindAsync(jobId); // Fetch the job by its Id
+
+                if (job != null)
+                {
+                    job.Priority = (i + 1).ToString(); // Convert the int to a string
+                    _context.Jobs.Update(job); // Mark the job entity as updated
+                }
+            }
+
+            await _context.SaveChangesAsync(); // Persist the changes to the database
+        }
+
         public async Task<JobDto> UpdateJob(int id, JobDto jobDto)
         {
             var existingJob = await _context.Jobs.FindAsync(id);

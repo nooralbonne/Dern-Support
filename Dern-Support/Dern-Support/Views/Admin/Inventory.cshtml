@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "User Management";
+    ViewData["Title"] = "Inventory Management";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -9,5 +9,298 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - DernSupport</title>
+    <link rel="stylesheet" href="~/css/site.css" />
 </head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+h1, h2 {
+    color: #007bff;
+    margin: 20px 0;
+}
+
+.container1 {
+        padding: 20px;
+        background-color: #fff;
+        max-width: 1200px;
+        margin: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-section {
+    margin-bottom: 20px;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.inventory-section {
+    margin-bottom: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.table th, .table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.table th {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table tr:hover {
+    background-color: #eef3ff;
+}
+
+.form-section {
+   
+    padding: 20px;
+   
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.btn-save {
+    width: 100%;
+    padding: 10px;
+    background-color: #218838;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-save:hover {
+    background-color: #1b6e30;
+}
+
+@@media (max-width: 768px) {
+    .container1 {
+        padding: 10px;
+    }
+}
+
+</style>
+<body>
+    <div class="container1">
+        <h1>@ViewData["Title"]</h1>
+
+        <!-- Search and Filter -->
+        <div class="search-section">
+            <input type="text" id="searchInput" placeholder="Search by name or category..." oninput="searchInventory()" />
+        </div>
+
+        <!-- Inventory Overview -->
+        <div class="inventory-section">
+            <h2>Inventory Overview</h2>
+            <table id="inventoryTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Item ID</th>
+                        <th>Item Name</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Supplier</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be added here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Edit/Add Inventory Form -->
+        <div class="form-section">
+            <h2 id="formTitle">Add/Edit Inventory Item</h2>
+            <form id="inventoryForm" onsubmit="submitForm(event)">
+                <input type="hidden" id="itemId" />
+
+                <div class="form-group">
+                    <label for="itemName">Item Name</label>
+                    <input type="text" id="itemName" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" required>
+                        <option value="SparePart">SparePart</option>
+                        <option value="Tool">Tool</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" id="quantity" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" step="0.01" id="price" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="supplier">Supplier Name</label>
+                    <input type="text" id="supplier" required />
+                </div>
+
+                <button type="submit" class="btn-save">Save Item</button>
+                <button type="button" id="deleteButton" class="btn-save" style="display: none;" onclick="deleteItem()">Delete Item</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let editingItemId = null;
+
+        async function fetchInventories() {
+            const response = await fetch('/api/inventory');
+            const inventories = await response.json();
+            const tableBody = document.querySelector('#inventoryTable tbody');
+            tableBody.innerHTML = '';
+
+            inventories.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                            <td>${item.itemId}</td>
+                            <td>${item.itemName}</td>
+                            <td>${item.category}</td>
+                            <td>${item.quantityInStock}</td>
+                            <td>${item.pricePerUnit}</td>
+                            <td>${item.supplierName}</td>
+                            <td>
+                                <button onclick="editItem(${item.itemId})">Edit</button> |
+                                <button onclick="deleteInventory(${item.itemId})">Delete</button>
+                            </td>
+                        `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function searchInventory() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#inventoryTable tbody tr');
+
+            rows.forEach(row => {
+                const itemName = row.cells[1].textContent.toLowerCase();
+                const category = row.cells[2].textContent.toLowerCase();
+                row.style.display = (itemName.includes(searchValue) || category.includes(searchValue)) ? '' : 'none';
+            });
+        }
+
+        async function editItem(id) {
+            const response = await fetch(`/api/inventory/${id}`);
+            const item = await response.json();
+
+            document.getElementById('itemId').value = item.itemId;
+            document.getElementById('itemName').value = item.itemName;
+            document.getElementById('category').value = item.category;
+            document.getElementById('quantity').value = item.quantityInStock;
+            document.getElementById('price').value = item.pricePerUnit;
+            document.getElementById('supplier').value = item.supplierName;
+
+            document.getElementById('formTitle').textContent = "Edit Inventory Item";
+            document.getElementById('deleteButton').style.display = 'inline';
+            editingItemId = id;
+        }
+
+        async function submitForm(event) {
+            event.preventDefault();
+
+            const itemId = document.getElementById('itemId').value;
+            const itemName = document.getElementById('itemName').value;
+            const category = document.getElementById('category').value;
+            const quantity = document.getElementById('quantity').value;
+            const price = document.getElementById('price').value;
+            const supplier = document.getElementById('supplier').value;
+
+            const url = itemId ? `/api/inventory/${itemId}` : '/api/inventory';
+            const method = itemId ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    itemId: itemId,
+                    itemName: itemName,
+                    category: category,
+                    quantityInStock: quantity,
+                    pricePerUnit: price,
+                    supplierName: supplier
+                })
+            });
+
+            if (response.ok) {
+                fetchInventories();
+                resetForm();
+            } else {
+                alert('Error saving inventory item');
+            }
+        }
+
+        async function deleteItem() {
+            const itemId = document.getElementById('itemId').value;
+            if (confirm('Are you sure you want to delete this item?')) {
+                await fetch(`/api/inventory/${itemId}`, { method: 'DELETE' });
+                fetchInventories();
+                resetForm();
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('itemId').value = '';
+            document.getElementById('itemName').value = '';
+            document.getElementById('category').value = 'SparePart';
+            document.getElementById('quantity').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('supplier').value = '';
+            document.getElementById('formTitle').textContent = "Add Inventory Item";
+            document.getElementById('deleteButton').style.display = 'none';
+            editingItemId = null;
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchInventories);
+    </script>
+</body>
 </html>

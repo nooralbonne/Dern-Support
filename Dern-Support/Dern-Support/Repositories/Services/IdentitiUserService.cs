@@ -128,5 +128,64 @@ namespace Dern_Support.Repositories.Services
             var userFromDb = await _userManager.FindByIdAsync(user.Id); // Ensure user exists
             return await _jwtTokenService.GenerateToken(userFromDb, TimeSpan.FromMinutes(60));
         }
+
+        public async Task<IEnumerable<UserDto>> GetAllUsers()
+        {
+            var users = _userManager.Users;
+            var userDtos = new List<UserDto>();
+
+            foreach (var user in users)
+            {
+                userDtos.Add(new UserDto
+                {
+                    Id = user.Id,
+                    Username = user.UserName,
+                    Roles = await _userManager.GetRolesAsync(user)
+                });
+            }
+
+            return userDtos;
+        }
+
+        public async Task<UserDto> GetUserAccountById(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return null;
+
+            return new UserDto
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Roles = await _userManager.GetRolesAsync(user)
+            };
+        }
+
+        public async Task<UserDto> UpdateUser(string userId, UpdateUserDto updateUserDto)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return null;
+
+            user.UserName = updateUserDto.UserName;
+            user.Email = updateUserDto.Email;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded) return null;
+
+            return new UserDto
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Roles = await _userManager.GetRolesAsync(user)
+            };
+        }
+
+        public async Task<bool> DeleteUser(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return false;
+
+            var result = await _userManager.DeleteAsync(user);
+            return result.Succeeded;
+        }
     }
 }

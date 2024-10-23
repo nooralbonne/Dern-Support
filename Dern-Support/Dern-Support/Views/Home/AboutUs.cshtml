@@ -9,7 +9,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - DernSupport2</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
         .about-hero {
             background: linear-gradient(to right, #007bff, #6610f2);
             color: #fff;
@@ -17,76 +26,157 @@
             text-align: center;
         }
 
-            .about-hero h1 {
-                margin: 0;
-                font-size: 2.5rem;
-                font-weight: bold;
-            }
+        .about-hero h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
 
-            .about-hero p {
-                font-size: 1.25rem;
-                margin-top: 10px;
-            }
+        .about-hero p {
+            font-size: 1.25rem;
+            margin-top: 10px;
+        }
 
         .about-content {
             padding: 40px 20px;
             max-width: 1200px;
             margin: auto;
-            background-color: #f8f9fa;
+            background-color: #f8f8f8;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .about-section {
             margin-bottom: 30px;
         }
 
-            .about-section h2 {
+        .about-section h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .about-section p {
+            font-size: 1rem;
+            color: #555;
+            margin: 10px 0;
+        }
+
+        .about-section ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .about-icons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+
+        .about-icons div {
+            text-align: center;
+            flex: 1 1 30%;
+            margin: 0 10px;
+        }
+
+        .about-icons i {
+            font-size: 60px;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .about-background {
+            background: url('background-image.jpg') no-repeat center center/cover;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        @@media (max-width: 768px) {
+            .about-hero {
+                padding: 40px 10px;
+            }
+
+            .about-hero h1 {
                 font-size: 2rem;
-                margin-bottom: 10px;
-                color: #333;
+            }
+
+            .about-hero p {
+                font-size: 1rem;
+            }
+
+            .about-content {
+                padding: 20px;
+            }
+
+            .about-section h2 {
+                font-size: 1.5rem;
             }
 
             .about-section p {
-                font-size: 1.1rem;
-                color: #555;
+                font-size: 0.9rem;
             }
 
-            .about-section ul {
-                list-style: none;
-                padding: 0;
+            .about-icons {
+                flex-direction: column;
+                align-items: center;
             }
-
-                .about-section ul li {
-                    padding: 8px 0;
-                    font-size: 1rem;
-                    color: #555;
-                }
+        }
     </style>
 </head>
 <body>
     <section class="about-hero">
         <h1>About Us</h1>
-        <p>Learn more about our mission, values, and how our business serves you.</p>
+        <p>Learn more about our mission, values, history, team, and future.</p>
     </section>
 
     <section class="about-content">
-        <div class="about-section">
-            <h2>Our Mission</h2>
-            <p>We strive to provide the best services to our clients with a focus on innovation, integrity, and excellence.</p>
-        </div>
+        <div class="about-background">
+            <div class="about-section">
+                <h2>Our Mission</h2>
+                <p>At DernSupport, our mission is to provide top-notch technical support solutions that empower our clients to achieve their goals. We are dedicated to excellence, innovation, and customer satisfaction.</p>
+            </div>
 
-        <div class="about-section">
-            <h2>Our Values</h2>
-            <ul>
-                <li><strong>Integrity:</strong> We believe in doing the right thing, always.</li>
-                <li><strong>Innovation:</strong> Constantly seeking new and better ways to serve our clients.</li>
-                <li><strong>Excellence:</strong> Commitment to the highest standards in everything we do.</li>
-            </ul>
-        </div>
-        <div class="about-section">
-            <h2>Our Business</h2>
-            <p>Dern Support is a website where you can get assistance in hardware services, you can register for free and send the issue details to one of our support team and they will help you solve the issue as fast as possible.</p>
+            <div class="about-section">
+                <h2>Our Values</h2>
+                <div class="about-icons">
+                    <div>
+                        <i class="ri-lightbulb-flash-line"></i>
+                        <p>Innovation</p>
+                    </div>
+                    <div>
+                        <i class="ri-lock-line"></i> <!-- Integrity Icon -->
+                        <p>Integrity</p>
+                    </div>
+                    <div>
+                        <i class="ri-trophy-line"></i>
+                        <p>Excellence</p>
+                    </div>
+                </div>
+                <p>We are committed to fostering a culture of innovation, integrity, and excellence. Our core values drive us to deliver outstanding results and build lasting relationships with our clients.</p>
+            </div>
+
+            <div class="about-section">
+                <h2>Our History</h2>
+                <p>Founded in [Year], DernSupport has grown from a small startup to a leading provider of technical support services. Our journey has been marked by our commitment to innovation and customer-centric solutions.</p>
+                <p>Over the years, we have expanded our services and developed a reputation for excellence. Our history is a testament to our dedication to providing high-quality support and building strong relationships with our clients.</p>
+            </div>
+
+            <div class="about-section">
+                <h2>Our Team</h2>
+                <p>Our team is composed of highly skilled professionals with years of experience in the industry. We are passionate about technology and dedicated to delivering exceptional support to our clients.</p>
+                <p>Meet some of the key members of our team:</p>
+                <ul>
+                    <li><strong>Jane Doe:</strong> CEO & Founder - Jane leads our team with a vision for innovation and customer satisfaction.</li>
+                    <li><strong>John Smith:</strong> CTO - John oversees our technology and ensures we stay at the forefront of industry trends.</li>
+                    <li><strong>Emily Johnson:</strong> Customer Support Manager - Emily ensures our clients receive top-notch support and services.</li>
+                </ul>
+            </div>
+
+            <div class="about-section">
+                <h2>Our Future</h2>
+                <p>As we look to the future, DernSupport is committed to continuing our growth and enhancing our services. We aim to expand our offerings and leverage new technologies to better serve our clients.</p>
+                <p>We are excited about the opportunities ahead and are dedicated to remaining at the cutting edge of technical support. Our goal is to keep providing the high level of service our clients have come to expect and to explore new ways to add value.</p>
+            </div>
         </div>
     </section>
 </body>

@@ -1,0 +1,208 @@
+﻿@{
+    ViewData["Title"] = "Analytics Management";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DernSupport2</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container1 {
+            padding: 20px;
+            background-color: #fff;
+            max-width: 1200px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-form {
+            margin-bottom: 30px;
+        }
+
+            .filter-form h3 {
+                margin-bottom: 15px;
+            }
+
+            .filter-form label {
+                margin-right: 10px;
+            }
+
+            .filter-form input[type="date"] {
+                margin-right: 10px;
+            }
+
+            .filter-form button {
+                padding: 8px 15px;
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+                .filter-form button:hover {
+                    background-color: #0056b3;
+                }
+
+        .chart-container {
+            margin-bottom: 30px;
+        }
+
+            .chart-container h3 {
+                margin-bottom: 15px;
+            }
+
+        canvas {
+            width: 100% !important;
+            height: 400px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container1">
+        <h1>@ViewData["Title"]</h1>
+
+        <!-- Data Filtering Page -->
+        <section class="filter-form">
+            <h3>Filter Analytics Data</h3>
+            <form id="filterForm" class="form-inline">
+                <div class="form-group">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" class="form-control" id="startDate" name="startDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" class="form-control" id="endDate" name="endDate" required>
+                </div>
+                <button type="submit">Apply Filters</button>
+            </form>
+        </section>
+
+        <!-- Reports Dashboard Page -->
+        <section class="chart-container">
+            <h3>Job Completion Times</h3>
+            <canvas id="completionTimesChart"></canvas>
+        </section>
+
+        <section class="chart-container">
+            <h3>Common Issues</h3>
+            <canvas id="commonIssuesChart"></canvas>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+
+            // Initialize charts
+            const ctxCompletionTimes = document.getElementById('completionTimesChart').getContext('2d');
+            const ctxCommonIssues = document.getElementById('commonIssuesChart').getContext('2d');
+
+            let completionTimesChart, commonIssuesChart;
+
+            // Load initial data
+            loadAnalyticsData();
+
+            // Handle filter form submission
+            document.getElementById('filterForm').addEventListener('submit', async function (event) {
+                event.preventDefault();
+                loadAnalyticsData();
+            });
+
+            async function loadAnalyticsData() {
+                const startDate = startDateInput.value;
+                const endDate = endDateInput.value;
+
+                try {
+                    const response = await fetch(`/api/analytics?startDate=${startDate}&endDate=${endDate}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem('token') // Add token if needed
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch analytics data');
+                    }
+
+                    const data = await response.json();
+
+                    // Update Job Completion Times Chart
+                    if (completionTimesChart) {
+                        completionTimesChart.destroy();
+                    }
+                    completionTimesChart = new Chart(ctxCompletionTimes, {
+                        type: 'line',
+                        data: {
+                            labels: data.completionTimes.labels,
+                            datasets: [{
+                                label: 'Completion Times',
+                                data: data.completionTimes.values,
+                                borderColor: '#007bff',
+                                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    beginAtZero: true
+                                },
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+
+                    // Update Common Issues Chart
+                    if (commonIssuesChart) {
+                        commonIssuesChart.destroy();
+                    }
+                    commonIssuesChart = new Chart(ctxCommonIssues, {
+                        type: 'bar',
+                        data: {
+                            labels: data.commonIssues.labels,
+                            datasets: [{
+                                label: 'Common Issues',
+                                data: data.commonIssues.values,
+                                backgroundColor: '#007bff',
+                                borderColor: '#0056b3',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    beginAtZero: true
+                                },
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+
+                } catch (error) {
+                    console.error('Error loading analytics data:', error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

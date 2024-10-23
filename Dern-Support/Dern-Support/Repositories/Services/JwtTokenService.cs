@@ -23,8 +23,12 @@ namespace Dern_Support.Repositories.Services
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = GetSecurityKey(configuration),
-                ValidateIssuer = false,
-                ValidateAudience = false
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidIssuer = configuration["JWT:Issuer"],
+                ValidAudience = configuration["JWT:Audience"],
+                ClockSkew = TimeSpan.Zero // Optional: Remove clock skew allowance
+
             };
         }
         private static SecurityKey GetSecurityKey(IConfiguration configuration)
@@ -54,6 +58,9 @@ namespace Dern_Support.Repositories.Services
                 signingCredentials: new SigningCredentials(signInKey, SecurityAlgorithms.HmacSha256),
                 claims: userPrincliple.Claims
                 );
+
+            // Log the generated token
+            Console.WriteLine($"Generated Token: {token}");
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DernSupport2</title>
+    <title>@ViewData["Title"] - DernSupport</title>
   
     <style>
 /* =============== Globals ============== */
@@ -555,14 +555,14 @@ body {
                     </a>
                 </li>
 
-              @*   <li>
-                    <a href="#">
+                <li>
+                    <a href='@Url.Action("AnalyticsManagement", "Admin")'>
                         <span class="icon">
                             <ion-icon name="lock-closed-outline"></ion-icon>
                         </span>
-                        <span class="title">Password</span>
+                        <span class="title">Analytics</span>
                     </a>
-                </li> *@
+                </li> 
 
                 <li>
                     <a href="#" onclick="logout()">

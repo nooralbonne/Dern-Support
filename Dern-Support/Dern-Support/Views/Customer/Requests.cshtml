@@ -1,0 +1,188 @@
+﻿@{
+    ViewData["Title"] = "Support Requests";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    h1, h2 {
+        color: #007bff;
+        margin: 20px 0;
+    }
+
+    .container1 {
+        padding: 20px;
+        background-color: #fff;
+        max-width: 1200px;
+        margin: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-section {
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .calendar-container {
+        margin-bottom: 20px;
+    }
+
+    #quoteResult {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+    }
+
+    @@media (max-width: 768px) {
+        .container1 {
+            padding: 10px;
+        }
+    }
+</style>
+
+<div class="container1">
+    <h1>@ViewData["Title"]</h1>
+
+    <!-- Submit Request Section -->
+    <div class="form-section">
+        <h2>Submit a Support Request</h2>
+        <form id="submitRequestForm">
+            <div class="form-group">
+                <label for="requestDescription">Issue Description</label>
+                <textarea id="requestDescription" name="requestDescription" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="urgencyLevel">Urgency Level</label>
+                <select id="urgencyLevel" name="urgencyLevel" required>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary">Submit Request</button>
+        </form>
+    </div>
+
+    <!-- Schedule Repair Section -->
+    <div class="calendar-container">
+        <h2>Schedule a Repair</h2>
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Get Quote Section -->
+    <div class="form-section">
+        <h2>Get a Quote</h2>
+        <form id="quoteForm">
+            <div class="form-group">
+                <label for="requestDetails">Request Details</label>
+                <textarea id="requestDetails" name="requestDetails" required></textarea>
+            </div>
+            <button type="submit" class="btn-primary">Submit Request</button>
+        </form>
+        <div id="quoteResult"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/main.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/main.min.css">
+
+    <script>
+        // Submit Request Form Submission
+        document.getElementById('submitRequestForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const response = await fetch('/api/supportrequest', { // Route for handling all requests
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    requestDescription: document.getElementById('requestDescription').value,
+                    urgencyLevel: document.getElementById('urgencyLevel').value,
+                    requestType: 'SupportRequest' // Added to differentiate between types
+                })
+            });
+            if (response.ok) {
+                alert('Support request submitted successfully!');
+                // Optionally redirect or clear form
+            } else {
+                alert('Failed to submit request.');
+            }
+        });
+
+        // Schedule Repair Calendar
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                dateClick: function (info) {
+                    const selectedDate = info.dateStr;
+                    alert(`Selected date: ${selectedDate}`);
+                    // Implement further logic for scheduling
+                }
+            });
+            calendar.render();
+        });
+
+        // Get Quote Form Submission
+        document.getElementById('quoteForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const response = await fetch('/api/supportrequest', { // Same route for all requests
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    requestDetails: document.getElementById('requestDetails').value,
+                    requestType: 'QuoteRequest' // Added to differentiate between types
+                })
+            });
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('quoteResult').innerText = `Estimated Cost: $${data.estimatedCost}`;
+            } else {
+                alert('Failed to get quote.');
+            }
+        });
+    </script>
+}

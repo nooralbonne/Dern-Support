@@ -378,8 +378,10 @@
                         console.log('Roles:', result.roles); // Log roles for verification
                         if (result.roles.includes("Admin")) {
                             window.location.href = '@Url.Action("Index", "Admin")'; // Redirect to the admin dashboard
-                        } else if (result.roles.includes("Customer")) {
-                            window.location.href = '@Url.Action("Index", "User")'; // Redirect to the customer dashboard
+                        } else if (result.roles.includes("User")) {
+                            window.location.href = '@Url.Action("Index", "Customer")'; // Redirect to the customer dashboard
+                        } else if (result.roles.includes("Technician")) {
+                            window.location.href = '@Url.Action("Index", "Technician")'; // Redirect to the customer dashboard
                         } else {
                             alert('Unknown role: ' + result.roles);
                         }
@@ -398,28 +400,13 @@
                 alert('An error occurred during login.');
             }
         });
+
+
         //registerForm
         document.getElementById('registerForm').addEventListener('submit', async (event) => {
             event.preventDefault();
-
-            // Gather form data
             const formData = new FormData(event.target);
-
-            // Convert form data to an object
             const data = Object.fromEntries(formData.entries());
-
-            // Get the selected role from the dropdown
-            const role = formData.get('Roles');
-
-            // Wrap data in RegisterdUserDto
-            const payload = {
-                UserName: data.UserName,
-                FirstName: null,  // Set to null if not included in the form
-                LastName: null,   // Set to null if not included in the form
-                Email: data.Email,
-                Password: data.Password,
-                Roles: [role] // Wrap the single role in an array
-            };
 
             try {
                 const response = await fetch('http://localhost:5117/api/Users/Register', {
@@ -427,28 +414,42 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(data)
                 });
 
-                if (response.ok) {
-                    alert('User registered successfully!');
-                    window.location.href = 'http://localhost:5117/api/admin'; // Redirect as needed
-                } else {
-                    const errorData = await response.json();
-                    console.error('Registration failed:', errorData); // Log error details
-                    let errorMessage = 'Registration failed: ';
-                    if (errorData.errors) {
-                        errorMessage += Object.values(errorData.errors).flat().join(', ');
+                const responseBody = await response.text(); // Read response as text first
+
+                try {
+                    const result = JSON.parse(responseBody); // Attempt to parse JSON
+                    if (response.ok) {
+                        console.log('Registration successful:', result);
+
+                        // Redirect based on the selected role after successful registration
+                        if (data.Roles === 'Admin') {
+                            window.location.href = '@Url.Action("Index", "Admin")'; // Redirect to Admin dashboard
+                        } else if (data.Roles === 'User') {
+                            window.location.href = '@Url.Action("Index", "Customer")'; // Redirect to Customer dashboard
+                        } else if (data.Roles === 'Technician') {
+                            window.location.href = '@Url.Action("Index", "Technician")'; // Redirect to Technician dashboard
+                        } else {
+                            alert('Unknown role: ' + data.Roles);
+                        }
+
+                        // Save the JWT token
+                        localStorage.setItem('token', result.token);
                     } else {
-                        errorMessage += errorData.title || 'Please check your inputs.';
+                        alert('Registration failed: ' + (result.message || 'An error occurred.'));
                     }
-                    alert(errorMessage);
+                } catch (jsonError) {
+                    console.error('JSON Parsing Error:', jsonError);
+                    alert('Registration failed: The server returned an invalid response.');
                 }
             } catch (error) {
                 console.error('Error:', error);
                 alert('An error occurred during registration.');
             }
         });
+
     </script>
 
 </body>

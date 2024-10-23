@@ -1,0 +1,319 @@
+﻿@{
+    ViewData["Title"] = "Technician Setting";
+    Layout = "~/Views/Shared/_TechnicianLayout.cshtml";
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        /* Existing styles */
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container1 {
+            padding: 20px;
+            background-color: #fff;
+            max-width: 1200px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #007bff;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+        }
+
+        .job-table {
+            margin-top: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .job-table th, .job-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .job-table th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .job-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            border-radius: 8px;
+        }
+
+        .modal-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .modal-close:hover,
+        .modal-close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-footer {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        /* Job Details Section */
+        .job-details {
+            margin-top: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-details p {
+            margin: 10px 0;
+        }
+
+        .job-details button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .job-details button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .container1 {
+                padding: 10px;
+            }
+
+            .modal-content {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container1">
+        <h1>Job Management</h1>
+
+        <!-- Filtering Options -->
+        <div class="filter-section">
+            <label for="statusFilter">Filter by Status:</label>
+            <select id="statusFilter" onchange="filterJobs()">
+                <option value="All">All</option>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+
+            <label for="priorityFilter">Filter by Priority:</label>
+            <select id="priorityFilter" onchange="filterJobs()">
+                <option value="All">All</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
+        </div>
+
+        <!-- Job List Table -->
+        <div class="job-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Job ID</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Scheduled Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="jobTableBody">
+                    @@foreach (var job in jobs)
+                    {
+                        <tr onclick="showJobDetails(@@job.JobId)">
+                            <td>@@job.JobId</td>
+                            <td>@@job.Priority</td>
+                            <td>@@job.JobStatus</td>
+                            <td>@@job.ScheduledDate.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                <button type="button" onclick="showJobDetails(@@job.JobId)">View Details</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Job Details Modal -->
+        <div id="jobDetailsModal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeModal('jobDetailsModal')">&times;</span>
+                <h2>Job Details</h2>
+                <p><strong>Job ID:</strong> <span id="modalJobId"></span></p>
+                <p><strong>Priority:</strong> <span id="modalJobPriority"></span></p>
+                <p><strong>Status:</strong> <span id="modalJobStatus"></span></p>
+                <p><strong>Scheduled Date:</strong> <span id="modalJobDate"></span></p>
+                <p><strong>Estimated Completion Time:</strong> <span id="modalEstimatedTime"></span> hours</p>
+                <p><strong>Actual Completion Time:</strong> <span id="modalActualTime"></span> hours</p>
+
+                <h2>Payment Information</h2>
+                <p><strong>Amount:</strong> <span id="modalPaymentAmount"></span></p>
+                <p><strong>Payment Date:</strong> <span id="modalPaymentDate"></span></p>
+                <p><strong>Payment Method:</strong> <span id="modalPaymentMethod"></span></p>
+                <p><strong>Payment Status:</strong> <span id="modalPaymentStatus"></span></p>
+
+                <div class="modal-footer">
+                    <button type="button" onclick="showJobHistory()">View Job History</button>
+                    <button type="button" onclick="openStatusUpdate()">Update Job Status</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job History Modal -->
+        <div id="jobHistoryModal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeModal('jobHistoryModal')">&times;</span>
+                <h2>Job History</h2>
+                <ul id="jobHistory">
+                    <!-- Job history will be dynamically populated here -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- Job Status Update Modal -->
+        <div id="jobStatusUpdateModal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeModal('jobStatusUpdateModal')">&times;</span>
+                <h2>Update Job Status</h2>
+                <form id="statusUpdateForm">
+                    <label for="status">Status:</label>
+                    <select id="status" name="status">
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                    <br><br>
+                    <label for="completionTime">Estimated Completion Time (hours):</label>
+                    <input type="number" id="completionTime" name="completionTime" min="0">
+                    <br><br>
+                    <button type="button" onclick="submitStatusUpdate()">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- JavaScript for Modal and Job Management -->
+        <script>
+            function showJobDetails(jobId) {
+                // Fetch job details from server-side JSON object
+                var jobs = @@Html.Raw(Json.Encode(Model.Jobs));
+                var job = jobs.find(j => j.JobId === jobId);
+                if (job) {
+                    document.getElementById("modalJobId").innerText = job.JobId;
+                    document.getElementById("modalJobPriority").innerText = job.Priority;
+                    document.getElementById("modalJobStatus").innerText = job.JobStatus;
+                    document.getElementById("modalJobDate").innerText = job.ScheduledDate;
+                    document.getElementById("modalEstimatedTime").innerText = job.EstimatedCompletionTime;
+                    document.getElementById("modalActualTime").innerText = job.ActualCompletionTime;
+                    document.getElementById("modalPaymentAmount").innerText = job.PaymentAmount;
+                    document.getElementById("modalPaymentDate").innerText = job.PaymentDate;
+                    document.getElementById("modalPaymentMethod").innerText = job.PaymentMethod;
+                    document.getElementById("modalPaymentStatus").innerText = job.PaymentStatus;
+
+                    document.getElementById("jobDetailsModal").style.display = 'block';
+                }
+            }
+
+            function filterJobs() {
+                // Implement filtering logic
+                var status = document.getElementById("statusFilter").value;
+                var priority = document.getElementById("priorityFilter").value;
+                // Add filtering logic here
+            }
+
+            function showJobHistory() {
+                // Simulate fetching job history from the server
+                var history = @@Html.Raw(Json.Encode(Model.JobHistory));
+                var historyList = document.getElementById("jobHistory");
+                historyList.innerHTML = '';
+                history.forEach(function (item) {
+                    var li = document.createElement('li');
+                    li.textContent = item;
+                    historyList.appendChild(li);
+                });
+                document.getElementById("jobHistoryModal").style.display = 'block';
+            }
+
+            function openStatusUpdate() {
+                document.getElementById("jobStatusUpdateModal").style.display = 'block';
+            }
+
+            function closeModal(modalId) {
+                document.getElementById(modalId).style.display = 'none';
+            }
+
+            function submitStatusUpdate() {
+                // Implement form submission logic
+                closeModal('jobStatusUpdateModal');
+            }
+        </script>
+    </div>
+</body>
+</html>

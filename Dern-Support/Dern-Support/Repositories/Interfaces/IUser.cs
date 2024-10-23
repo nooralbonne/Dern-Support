@@ -20,5 +20,19 @@ namespace Dern_Support.Repositories.Interfaces
         // add user profile 
         public Task<UserDto> userProfile(ClaimsPrincipal claimsPrincipal);
 
+        // Retrieve all users
+        Task<IEnumerable<UserDto>> GetAllUsers();
+
+        // Retrieve a user by ID
+        Task<UserDto> GetUserAccountById(string userId);
+
+        // Update a user
+        Task<UserDto> UpdateUser(string userId, UpdateUserDto updateUserDto);
+
+        // Delete a user
+        Task<bool> DeleteUser(string userId);
+
+
+
     }
 }
