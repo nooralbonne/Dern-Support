@@ -1,0 +1,162 @@
+﻿@{
+    ViewData["Title"] = "Technician Dashboard";
+    Layout = "~/Views/Shared/_TechnicianLayout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+          
+        }
+
+        h1, h2 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+            margin: 10px;
+        }
+
+        .dashboard-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+            .dashboard-card h3 {
+                margin-bottom: 15px;
+                font-weight: 600;
+                color: #333;
+            }
+
+            .dashboard-card p {
+                margin: 0;
+                font-size: 18px;
+            }
+
+            .dashboard-card a {
+                display: block;
+                margin-top: 10px;
+                color: #007bff;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+        .job-table {
+            max-width: 1250px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+        }
+
+            .job-table table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .job-table th, .job-table td {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .job-table th {
+                background-color: #007bff;
+                color: white;
+            }
+
+            .job-table tr:hover {
+                background-color: #f1f1f1;
+            }
+
+        .btn-status {
+            padding: 6px 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+            .btn-status:hover {
+                background-color: #218838;
+            }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Job Summary Cards -->
+        <div class="dashboard-card">
+            <h3>Total Jobs Assigned</h3>
+            <p>15</p>
+            <a href="#">View Details</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Jobs in Progress</h3>
+            <p>5</p>
+            <a href="#">View Details</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Upcoming Jobs</h3>
+            <p>3</p>
+            <a href="#">View Schedule</a>
+        </div>
+    </div>
+
+    <div class="job-table">
+        <h2>Current Job Assignments</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Job ID</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Scheduled Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>101</td>
+                    <td>High</td>
+                    <td>In Progress</td>
+                    <td>2024-09-20</td>
+                    <td><button class="btn-status">Update Status</button></td>
+                </tr>
+                <tr>
+                    <td>102</td>
+                    <td>Medium</td>
+                    <td>Pending</td>
+                    <td>2024-09-22</td>
+                    <td><button class="btn-status">Update Status</button></td>
+                </tr>
+                <tr>
+                    <td>103</td>
+                    <td>Low</td>
+                    <td>Completed</td>
+                    <td>2024-09-18</td>
+                    <td><button class="btn-status">Update Status</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

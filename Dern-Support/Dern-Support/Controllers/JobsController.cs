@@ -63,5 +63,18 @@ namespace Dern_Support.Controllers
             await _jobService.DeleteJob(id);
             return NoContent();
         }
+
+        [HttpPost("Prioritize")]
+        public async Task<IActionResult> PrioritizeJobs([FromBody] List<int> jobIds)
+        {
+            if (jobIds == null || jobIds.Count == 0)
+            {
+                return BadRequest("No jobs to prioritize");
+            }
+
+            await _jobService.PrioritizeJobs(jobIds);
+            return Ok();
+        }
+
     }
 }

@@ -1,22 +1,13 @@
 using Dern_Support.Data;
-using Dern_Support.Model;
 using Dern_Support.Repositories.Interfaces;
 using Dern_Support.Repositories.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.WebSockets;
-using System;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Logging;
 
 public class Program
 {
@@ -25,7 +16,8 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container
-        builder.Services.AddControllersWithViews(); // For MVC with views
+        builder.Services.AddControllersWithViews() // For MVC with views
+            .AddRazorRuntimeCompilation(); // Enable runtime compilation for Razor views
         builder.Services.AddRazorPages(); // For Razor Pages
 
         // Database configuration
@@ -82,6 +74,17 @@ public class Program
                 ValidIssuer = jwtSettings["Issuer"],
                 ValidAudience = jwtSettings["Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+            };
+
+            // Optional: Log the token during validation
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                    Console.WriteLine($"Validating Token: {token}");
+                    return Task.CompletedTask;
+                }
             };
         });
 
@@ -141,14 +144,12 @@ public class Program
 
         var app = builder.Build();
 
+
         // Middleware setup
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
-        else
+        if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 
@@ -208,7 +209,7 @@ public class Program
 
     private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
     {
-        string[] roles = { "Admin", "User", "Manager" };
+        string[] roles = { "Admin", "User", "Technician" };
 
         foreach (var role in roles)
         {

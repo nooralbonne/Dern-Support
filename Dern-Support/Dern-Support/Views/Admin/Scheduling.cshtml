@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "User Management";
+    ViewData["Title"] = "Scheduling";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -9,5 +9,199 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - DernSupport</title>
+    <style>
+        /* General page styling */
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1, h3 {
+            color: #007bff;
+            margin: 20px 0;
+        }
+
+        /* Container for job scheduling */
+        .container1 {
+            padding: 20px;
+            background-color: #fff;
+            max-width: 1200px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        /* Styling for the job queue and priority section */
+        .job-queue, .priority-section {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Job and prioritization items */
+        .list-group-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .list-group-item:hover {
+            background-color: #eef3ff;
+        }
+
+        .drag-placeholder {
+            padding: 20px;
+            margin-top: 10px;
+            text-align: center;
+            border: 2px dashed #ccc;
+            background-color: #f9f9f9;
+        }
+
+        /* Save button styling */
+        .btn-save {
+            width: 100%;
+            padding: 10px;
+            background-color: #218838;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-save:hover {
+            background-color: #1b6e30;
+        }
+
+        /* Responsiveness */
+        @@media (max-width: 768px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
+<body>
+    <div class="container1">
+        <h1>Job Scheduling and Prioritization</h1>
+        <div class="row">
+            <div class="job-queue">
+                <h3>Job Queue</h3>
+                <div id="jobQueue" class="list-group">
+                    <!-- Jobs will be rendered here -->
+                </div>
+            </div>
+            <div class="priority-section">
+                <h3>Prioritization Tools</h3>
+                <div class="drag-placeholder" id="dropArea">Drag jobs here to prioritize</div>
+                <div id="priorityQueue" class="list-group">
+                    <!-- Prioritized jobs will appear here -->
+                </div>
+                <button class="btn-save" id="savePriorities">Save Priorities</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            let jobs = [];
+            const jobQueue = $('#jobQueue');
+            const priorityQueue = $('#priorityQueue');
+            const dropArea = $('#dropArea');
+
+            // Fetch jobs from the API
+            function fetchJobs() {
+                $.ajax({
+                    url: '/api/Job',
+                    method: 'GET',
+                    success: function (data) {
+                        jobs = data;
+                        renderJobs();
+                    },
+                    error: function () {
+                        alert('Error fetching jobs');
+                    }
+                });
+            }
+
+            // Render jobs in the job queue
+            function renderJobs() {
+                jobQueue.empty();
+                jobs.forEach(job => {
+                    const jobItem = `
+                        <div class="list-group-item" data-id="${job.jobId}" draggable="true">
+                            Job ID: ${job.jobId} | Status: ${job.jobStatus} | Priority: ${job.priority}
+                        </div>`;
+                    jobQueue.append(jobItem);
+                });
+                enableDragAndDrop();
+            }
+
+            // Enable drag and drop functionality
+            function enableDragAndDrop() {
+                const draggableItems = $('.list-group-item');
+
+                draggableItems.on('dragstart', function (e) {
+                    e.originalEvent.dataTransfer.setData('text', $(this).data('id'));
+                });
+
+                dropArea.on('dragover', function (e) {
+                    e.preventDefault();
+                });
+
+                dropArea.on('drop', function (e) {
+                    e.preventDefault();
+                    const jobId = e.originalEvent.dataTransfer.getData('text');
+                    const job = jobs.find(j => j.jobId == jobId);
+                    if (job) {
+                        const jobItem = `
+                            <div class="list-group-item" data-id="${job.jobId}">
+                                Job ID: ${job.jobId} | Status: ${job.jobStatus} | Priority: ${job.priority}
+                            </div>`;
+                        priorityQueue.append(jobItem);
+                    }
+                });
+            }
+
+            // Save priorities when button is clicked
+            $('#savePriorities').on('click', function () {
+                const prioritizedJobIds = priorityQueue.find('.list-group-item').map(function () {
+                    return $(this).data('id');
+                }).get();
+
+                // Send prioritized job IDs to backend for saving
+                $.ajax({
+                    url: '/api/Job/Prioritize',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(prioritizedJobIds),
+                    success: function () {
+                        alert('Priorities saved successfully');
+                    },
+                    error: function () {
+                        alert('Error saving priorities');
+                    }
+                });
+            });
+
+            // Fetch jobs on page load
+            fetchJobs();
+        });
+    </script>
+</body>
 </html>

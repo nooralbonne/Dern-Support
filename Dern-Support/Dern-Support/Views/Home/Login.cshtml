@@ -369,8 +369,10 @@
                     console.log('Roles:', result.roles); // Log roles for verification
                     if (result.roles.includes("Admin")) {
                         window.location.href = '@Url.Action("Index", "Admin")'; // Redirect to the admin dashboard
-                    } else if (result.roles.includes("Customer")) {
-                        window.location.href = '@Url.Action("Index", "User")'; // Redirect to the customer dashboard
+                    } else if (result.roles.includes("User")) {
+                        window.location.href = '@Url.Action("Index", "Customer")'; // Redirect to the customer dashboard
+                        } else if (result.roles.includes("Technician")) {
+                            window.location.href = '@Url.Action("Index", "Technician")'; // Redirect to the customer dashboard
                     } else {
                         alert('Unknown role: ' + result.roles);
                     }

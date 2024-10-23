@@ -33,6 +33,10 @@ namespace Dern_Support.Controllers.MVC_Controllers
         {
             return View();
         }
+        public IActionResult AnalyticsManagement()
+        {
+            return View();
+        }
     }
 }
 

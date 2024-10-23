@@ -8,175 +8,185 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DernSupport</title>
+    <title>@ViewData["Title"] - DernSupport2</title>
     <style>
-        /* General Styles */
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
         }
 
-        .heading-section {
-            font-size: 2.5em;
-            margin-bottom: 20px;
+        .contact-hero {
+            background: linear-gradient(to right, #007bff, #6610f2);
+            color: #fff;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .contact-hero h1 {
+            margin: 0;
+            font-size: 2.8rem;
+            font-weight: 600;
+        }
+
+        .contact-hero p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            font-weight: 300;
+        }
+
+        .contact-content {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-section {
+            margin-bottom: 40px;
+        }
+
+        .contact-section h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
             color: #333;
         }
 
-        .btn {
+        .contact-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .contact-info, .contact-form {
+            flex: 1 1 45%;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-info p, .contact-form form input, .contact-form form textarea {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .contact-form form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contact-form input, .contact-form select, .contact-form textarea {
+            margin-bottom: 15px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .contact-form button {
             background-color: #007bff;
             color: #fff;
+            padding: 12px;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
         }
 
-            .btn:hover {
-                background-color: #0056b3;
-            }
-
-        .form-control {
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
+        .contact-form button:hover {
+            background-color: #0056b3;
         }
 
-        .contact-wrap {
-            background: #f8f9fa;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        .contact-map {
+            margin-top: 30px;
+            text-align: center;
         }
 
-        .dbox {
-            margin-bottom: 20px;
-        }
-
-            .dbox .icon {
-                font-size: 2em;
-                color: #007bff;
-            }
-
-            .dbox .text p {
-                margin: 0;
-                font-size: 1.1em;
-            }
-
-        #map {
+        .contact-map iframe {
+            width: 100%;
             height: 300px;
-            background: #e9ecef;
+            border: 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
+        @@media (max-width: 768px) {
+            .contact-hero {
+                padding: 60px 10px;
+            }
+
+            .contact-hero h1 {
+                font-size: 2.4rem;
+            }
+
+            .contact-hero p {
+                font-size: 1.1rem;
+            }
+
+            .contact-content {
+                padding: 20px;
+            }
+
+            .contact-section h2 {
+                font-size: 1.8rem;
+            }
+
+            .contact-info, .contact-form {
+                flex: 1 1 100%;
+            }
+
+            .contact-form input, .contact-form select, .contact-form textarea {
+                font-size: 0.9rem;
+            }
+
+            .contact-form button {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
-<section class="ftco-section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8 text-center mb-5">
-                <h2 class="heading-section">Contact Us</h2>
+    <section class="contact-hero">
+        <h1>Contact Us</h1>
+        <p>We would love to hear from you! Reach out to us through the information below or fill out the form.</p>
+    </section>
+
+    <section class="contact-content">
+        <div class="contact-section contact-details">
+            <div class="contact-info">
+                <h2>Contact Information</h2>
+                <p><strong>Address:</strong> Al-Yasmeen, Khaled Gadri street, Amman, Jordan</p>
+                <p><strong>Email:</strong> <a href="mailto:DernSupport@gmail.com">DernSupport@gmail.com</a></p>
+                <p><strong>Phone:</strong> +962 9974 120</p>
+            </div>
+
+            <div class="contact-form">
+                <h2>Get in Touch</h2>
+                <form>
+                    <select required>
+                        <option value="" disabled selected>Select a Subject</option>
+                        <option value="Support">Support</option>
+                        <option value="General Inquiry">General Inquiry</option>
+                        <option value="Feedback">Feedback</option>
+                    </select>
+                    <textarea placeholder="Your Message" rows="5" required></textarea>
+                    <button type="submit">Send Message</button>
+                </form>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-md-12">
-                <div class="wrapper">
-                    <div class="row no-gutters mb-5">
-                        <div class="col-md-7">
-                            <div class="contact-wrap w-100 p-md-5 p-4">
-                                <h3 class="mb-4">Get in Touch</h3>
-                                <div id="form-message-warning" class="mb-4"></div>
-                                <div id="form-message-success" class="mb-4">
-                                    Your message was sent, thank you!
-                                </div>
-                                <form method="POST" id="contactForm" name="contactForm" class="contactForm">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="label" for="name">Full Name</label>
-                                                <input type="text" class="form-control" name="name" id="name" placeholder="Name">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="label" for="email">Email Address</label>
-                                                <input type="email" class="form-control" name="email" id="email" placeholder="Email">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label class="label" for="subject">Subject</label>
-                                                <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label class="label" for="message">Message</label>
-                                                <textarea name="message" class="form-control" id="message" cols="30" rows="4" placeholder="Message"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <input type="submit" value="Send Message" class="btn btn-primary">
-                                                <div class="submitting"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="col-md-5 d-flex align-items-stretch">
-                            <div id="map">
-                                <!-- Map iframe or embed code here -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="dbox w-100 text-center">
-                                <div class="icon d-flex align-items-center justify-content-center">
-                                    <span class="fa fa-map-marker"></span>
-                                </div>
-                                <div class="text">
-                                    <p><span>Address:</span> 198 West 21th Street, Suite 721 New York NY 10016</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="dbox w-100 text-center">
-                                <div class="icon d-flex align-items-center justify-content-center">
-                                    <span class="fa fa-phone"></span>
-                                </div>
-                                <div class="text">
-                                    <p><span>Phone:</span> <a href="tel://1234567920">+ 1235 2355 98</a></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="dbox w-100 text-center">
-                                <div class="icon d-flex align-items-center justify-content-center">
-                                    <span class="fa fa-paper-plane"></span>
-                                </div>
-                                <div class="text">
-                                    <p><span>Email:</span> <a href="mailto:info@yoursite.com">info@yoursite.com</a></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="dbox w-100 text-center">
-                                <div class="icon d-flex align-items-center justify-content-center">
-                                    <span class="fa fa-globe"></span>
-                                </div>
-                                <div class="text">
-                                    <p><span>Website:</span> <a href="#">yoursite.com</a></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+        <div class="contact-map">
+            <h2>Our Location</h2>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.8354345093744!2d144.95373531564966!3d-37.816279442021026!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf5778a5269c4e0d2!2sFederation%20Square!5e0!3m2!1sen!2sau!4v1613979845899!5m2!1sen!2sau" allowfullscreen="" loading="lazy"></iframe>
         </div>
-    </div>
-</section>
-<script src="scripts.js"></script> <!-- Link to your main JavaScript file -->
+    </section>
 </body>
 </html>

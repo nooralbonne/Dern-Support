@@ -4,6 +4,7 @@ using Dern_Support.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dern_Support.Migrations
 {
     [DbContext(typeof(DernSupportDbContext))]
-    partial class DernSupportDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240914141440_updateUserDto")]
+    partial class updateUserDto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,7 +147,7 @@ namespace Dern_Support.Migrations
                             CustomerId = 1,
                             Address = "123 Elm Street",
                             CompanyName = "N/A",
-                            CreatedDate = new DateTime(2024, 9, 15, 10, 24, 1, 55, DateTimeKind.Local).AddTicks(6483),
+                            CreatedDate = new DateTime(2024, 9, 14, 17, 14, 39, 741, DateTimeKind.Local).AddTicks(4173),
                             CustomerType = "Individual",
                             Email = "alice.smith@example.com",
                             Name = "Alice Smith",
@@ -156,7 +159,7 @@ namespace Dern_Support.Migrations
                             CustomerId = 2,
                             Address = "456 Oak Avenue",
                             CompanyName = "Business Corp",
-                            CreatedDate = new DateTime(2024, 9, 15, 10, 24, 1, 55, DateTimeKind.Local).AddTicks(6486),
+                            CreatedDate = new DateTime(2024, 9, 14, 17, 14, 39, 741, DateTimeKind.Local).AddTicks(4177),
                             CustomerType = "Business",
                             Email = "info@businesscorp.com",
                             Name = "Business Corp",
@@ -209,7 +212,7 @@ namespace Dern_Support.Migrations
                             Comment = "Excellent service!",
                             CustomerId = 1,
                             Rating = 5,
-                            SubmittedDate = new DateTime(2024, 9, 15, 10, 24, 1, 55, DateTimeKind.Local).AddTicks(6655),
+                            SubmittedDate = new DateTime(2024, 9, 14, 17, 14, 39, 741, DateTimeKind.Local).AddTicks(4334),
                             SupportRequestId = 1
                         });
                 });
@@ -315,11 +318,11 @@ namespace Dern_Support.Migrations
                         new
                         {
                             JobId = 1,
-                            CreatedDate = new DateTime(2024, 9, 15, 10, 24, 1, 55, DateTimeKind.Local).AddTicks(6589),
+                            CreatedDate = new DateTime(2024, 9, 14, 17, 14, 39, 741, DateTimeKind.Local).AddTicks(4266),
                             EstimatedCompletionTime = 120,
                             JobStatus = "Scheduled",
                             Priority = "High",
-                            ScheduledDate = new DateTime(2024, 9, 16, 10, 24, 1, 55, DateTimeKind.Local).AddTicks(6560),
+                            ScheduledDate = new DateTime(2024, 9, 15, 17, 14, 39, 741, DateTimeKind.Local).AddTicks(4241),
                             SupportRequestId = 1,
                             TechnicianId = 1
                         });
@@ -359,7 +362,7 @@ namespace Dern_Support.Migrations
                             JobHistoryId = 1,
                             JobId = 1,
                             Status = "Pending",
-                            StatusChangeDate = new DateTime(2024, 9, 15, 10, 24, 1, 55, DateTimeKind.Local).AddTicks(6639),
+                            StatusChangeDate = new DateTime(2024, 9, 14, 17, 14, 39, 741, DateTimeKind.Local).AddTicks(4316),
                             TechnicianNote = "Awaiting parts"
                         });
                 });
@@ -436,7 +439,7 @@ namespace Dern_Support.Migrations
                             Author = "John Doe",
                             Category = "Hardware",
                             Content = "Step-by-step guide to fix AC issues.",
-                            DatePublished = new DateTime(2024, 9, 15, 10, 24, 1, 55, DateTimeKind.Local).AddTicks(6624),
+                            DatePublished = new DateTime(2024, 9, 14, 17, 14, 39, 741, DateTimeKind.Local).AddTicks(4299),
                             TechnicianId = 1,
                             Title = "How to fix a broken AC"
                         });
@@ -480,7 +483,7 @@ namespace Dern_Support.Migrations
                             PaymentId = 1,
                             Amount = 150.00m,
                             JobId = 1,
-                            PaymentDate = new DateTime(2024, 9, 15, 10, 24, 1, 55, DateTimeKind.Local).AddTicks(6606),
+                            PaymentDate = new DateTime(2024, 9, 14, 17, 14, 39, 741, DateTimeKind.Local).AddTicks(4281),
                             PaymentMethod = "CreditCard",
                             PaymentStatus = "Pending"
                         });
@@ -533,7 +536,7 @@ namespace Dern_Support.Migrations
                             CustomerId = 1,
                             RequestDescription = "AC not working",
                             Status = "Submitted",
-                            SubmittedDate = new DateTime(2024, 9, 15, 10, 24, 1, 55, DateTimeKind.Local).AddTicks(6533),
+                            SubmittedDate = new DateTime(2024, 9, 14, 17, 14, 39, 741, DateTimeKind.Local).AddTicks(4219),
                             UrgencyLevel = "High"
                         });
                 });
@@ -777,7 +780,7 @@ namespace Dern_Support.Migrations
                         new
                         {
                             UserId = 1,
-                            CreatedDate = new DateTime(2024, 9, 15, 10, 24, 1, 55, DateTimeKind.Local).AddTicks(6165),
+                            CreatedDate = new DateTime(2024, 9, 14, 17, 14, 39, 741, DateTimeKind.Local).AddTicks(3673),
                             Email = "admin@example.com",
                             PasswordHash = "hashedpassword",
                             Role = "Admin",
@@ -786,7 +789,7 @@ namespace Dern_Support.Migrations
                         new
                         {
                             UserId = 2,
-                            CreatedDate = new DateTime(2024, 9, 15, 10, 24, 1, 55, DateTimeKind.Local).AddTicks(6179),
+                            CreatedDate = new DateTime(2024, 9, 14, 17, 14, 39, 741, DateTimeKind.Local).AddTicks(3692),
                             Email = "tech1@example.com",
                             PasswordHash = "hashedpassword",
                             Role = "Technician",
@@ -795,7 +798,7 @@ namespace Dern_Support.Migrations
                         new
                         {
                             UserId = 3,
-                            CreatedDate = new DateTime(2024, 9, 15, 10, 24, 1, 55, DateTimeKind.Local).AddTicks(6181),
+                            CreatedDate = new DateTime(2024, 9, 14, 17, 14, 39, 741, DateTimeKind.Local).AddTicks(3695),
                             Email = "customer1@example.com",
                             PasswordHash = "hashedpassword",
                             Role = "Customer",

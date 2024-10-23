@@ -9,5 +9,6 @@ namespace Dern_Support.Repositories.Interfaces
         Task<JobDto> GetJobById(int jobId);
         Task<JobDto> UpdateJob(int id, JobDto jobDto);
         Task DeleteJob(int id);
+        Task PrioritizeJobs(List<int> jobIds);
     }
 }
